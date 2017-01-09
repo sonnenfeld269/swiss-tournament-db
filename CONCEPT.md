@@ -186,21 +186,32 @@ This is where VIEWS come in. We can create 2 VIEWS and then join them.
 The SQL for that would look like this:
 
 ```
-CREATE VIEW v_matchesWon as
+CREATE VIEW v_matchesWon AS
 SELECT players.id, players.name, count(matches.winner) as matches_won
 FROM players LEFT JOIN matches
 ON players.id = matches.winner
 GROUP BY players.id,players.name;
 
-CREATE VIEW v_matchesPlayed as
+CREATE VIEW v_matchesPlayed AS
 SELECT players.id, players.name, count(matches.id) as matches_played
 FROM players LEFT JOIN matches
 ON players.id = matches.winner or players.id = matches.loser
 GROUP BY players.id,players.name;
 ```
 
-Now we can join those 2 VIEWS into one 'Standings' table! But there are also
-other solutions we could use. It would also work with two subqueries like this:
+Now we can join those 2 VIEWS into one 'Standings' table!
+
+```
+CREATE VIEW v_playerstandings AS
+SELECT v_matcheswon.id, v_matcheswon.name,
+       v_matcheswon.matches_won, v_matchesplayed.matches_played
+FROM v_matcheswon LEFT JOIN v_matchesplayed
+ON v_matcheswon.id = v_matchesplayed.id
+AND v_matcheswon.name = v_matchesplayed.name
+ORDER BY v_matcheswon.matches_won DESC;
+```
+
+But there are also other solutions we could use. It would also work with two subqueries like this:
 
 ```
 CREATE VIEW v_playerstandings as
@@ -208,7 +219,69 @@ SELECT players.id, players.name,
 (SELECT count(*) FROM matches WHERE matches.winner = players.id) as matches_won,
 (SELECT count(*) FROM matches WHERE players.id = matches.winner or players.id = matches.loser) as matches_played
 FROM players
-GROUP BY players.id, players.name;
+GROUP BY players.id, players.name
+ORDER BY matches_won DESC;
 ```
 
 Now we have our standings table!
+
+The last thing to do is to sort it by the number of wins. So at the end of the
+view `v_playerstandings` we just add `ORDER BY v_matcheswon.matches_won DESC;`
+
+Now we can implement our `playerStandings()` function!
+
+```
+def playerStandings():
+    """Returns a list of the players and their win records, sorted by wins.
+
+    The first entry in the list should be the player in first place, or a player
+    tied for first place if there is currently a tie.
+
+    Returns:
+      A list of tuples, each of which contains (id, name, wins, matches):
+        id: the player's unique id (assigned by the database)
+        name: the player's full name (as registered)
+        wins: the number of matches the player has won
+        matches: the number of matches the player has played
+    """
+    connection = connect()
+    db_cursor = connection.cursor()
+    query = "SELECT * FROM v_playerstandings;"
+    db_cursor.execute(query)
+    standings = db_cursor.fetchall()
+    connection.commit()
+    connection.close()
+    return standings
+```
+
+The last function to implement is the `swissPairings()` function.
+We can use just python here. Because our table is already ordered by total wins,
+we just have to put each row in a tuple and the tuple into a list.
+
+```
+def swissPairings():
+    """Returns a list of pairs of players for the next round of a match.
+
+    Assuming that there are an even number of players registered, each player
+    appears exactly once in the pairings.  Each player is paired with another
+    player with an equal or nearly-equal win record, that is, a player adjacent
+    to him or her in the standings.
+
+    Returns:
+      A list of tuples, each of which contains (id1, name1, id2, name2)
+        id1: the first player's unique id
+        name1: the first player's name
+        id2: the second player's unique id
+        name2: the second player's name
+    """
+
+    pairings = []
+    all_standings = playerStandings()
+    if countPlayers() % 2 == 0:
+        # this for loop is equivalent to for(i=0,i<all_standings.length,i=i+2)
+        for i in range(0, len(all_standings)-1, 2):
+            pairing_tuple=(all_standings[i][0],all_standings[i][1],all_standings[i+1][0],all_standings[i+1][1])
+            pairings.append(pairing_tuple)
+
+    return pairings
+```

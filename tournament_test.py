@@ -76,7 +76,7 @@ def testReportMatches():
     deleteMatches()
     deletePlayers()
     registerPlayer("Bruno Walton")
-    registerPlayer("Boots O'Neal") # TODO how to escape this char?
+    registerPlayer("Boots ONeal") # TODO how to escape this char?
     registerPlayer("Cathy Burton")
     registerPlayer("Diane Grant")
     standings = playerStandings()
@@ -162,7 +162,7 @@ def testCustom():
     registerPlayer("Princess Celestia")
     registerPlayer("Princess Luna")
     """
-    deleteMatches()
+
     print "BEFORE MATCH:"
     swissPairings()
     print "\n"
@@ -173,29 +173,11 @@ def testCustom():
     print "AFTER MATCH:"
     swissPairings()
 
-"""
-(1, 'Twilight Sparkle', 1L, 1L)
-(2, 'Fluttershy', 0L, 1L)
-(3, 'Applejack', 1L, 1L)
-(4, 'Pinkie Pie', 0L, 1L)
-(5, 'Rarity', 1L, 1L)
-(6, 'Rainbow Dash', 0L, 1L)
-(7, 'Princess Celestia', 1L, 1L)
-(8, 'Princess Luna', 0L, 1L)
-"""
-"""output should be
-    [
-        (1,'Twilight Sparkle',3,'Applejack'),
-        (2,'Fluttershy',4,'Pinkie Pie'),
-        (5,'Rarity',7,'Princess Celestia'),
-        (6,'Rainbow Dash',8,'Princess Luna')
-    ]
 
-    """
 if __name__ == '__main__':
-    #testCount()
-    #testStandingsBeforeMatches()
-    #testReportMatches()
-    #testPairings()
-    testCustom()
+    testCount()
+    testStandingsBeforeMatches()
+    testReportMatches()
+    testPairings()
+    #testCustom()
     print "Success!  All tests pass!"

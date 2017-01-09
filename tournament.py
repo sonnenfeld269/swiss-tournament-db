@@ -71,14 +71,7 @@ def playerStandings():
     """
     connection = connect()
     db_cursor = connection.cursor()
-    #query_matches_played = "SELECT players.id, players.name, count(matches.id) as matches_played FROM players, matches WHERE players.id = matches.winner or players.id = matches.loser GROUP BY players.id,players.name;"
-    #query_matches_won = "SELECT players.id, players.name, count(matches.winner) as matches_won FROM players, matches WHERE players.id = matches.winner GROUP BY players.id,players.name;"
-    query = """SELECT v_matcheswon.id, v_matcheswon.name,
-                      v_matcheswon.matches_won, v_matchesplayed.matches_played
-               FROM v_matcheswon LEFT JOIN v_matchesplayed
-               ON v_matcheswon.id = v_matchesplayed.id
-               AND v_matcheswon.name = v_matchesplayed.name
-               ORDER BY v_matcheswon.matches_won DESC;"""
+    query = "SELECT * FROM v_playerstandings;"
     db_cursor.execute(query)
     standings = db_cursor.fetchall()
     connection.commit()
@@ -115,6 +108,12 @@ def swissPairings():
         name2: the second player's name
     """
 
+    pairings = []
+    all_standings = playerStandings()
     if countPlayers() % 2 == 0:
-        for item in playerStandings():
-            print item
+        # this for loop is equivalent to for(i=0,i<all_standings.length,i=i+2)
+        for i in range(0, len(all_standings)-1, 2):
+            pairing_tuple=(all_standings[i][0],all_standings[i][1],all_standings[i+1][0],all_standings[i+1][1])
+            pairings.append(pairing_tuple)
+
+    return pairings

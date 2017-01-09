@@ -20,6 +20,10 @@ The main parts of the app are:
 
 1. Clone the github project with `git clone https://github.com/sonnenfeld269/swiss-tournament-db.git`
 2. Go inside the folder with `cd swiss-tournament-db`
+3. If you already have psql installed then go to step 4, otherwise use `vagrant up` and then `vagrant ssh` to start the virtual machine.
+4. Use `psql` command start psql the console and connect to the tournament database with `\c tournament`.
+5. Now you can use any sql commands like `SELECT * FROM players;` to browse tables or
+you can play with the db-api in python by changing queries inside `tournament.py`
 
 ## References
 https://wiki.postgresql.org/wiki/Using_psycopg2_with_PostgreSQL
