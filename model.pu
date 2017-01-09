@@ -1,0 +1,3 @@
+@startuml
+Player "2" -> "*" Match : participate
+@enduml
