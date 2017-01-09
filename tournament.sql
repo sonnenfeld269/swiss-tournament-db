@@ -19,7 +19,6 @@ SELECT players.id, players.name, count(matches.id) as matches_played
 FROM players LEFT JOIN matches
 ON players.id = matches.winner or players.id = matches.loser
 GROUP BY players.id,players.name;
-
 /*
 
     Alternative Solution
