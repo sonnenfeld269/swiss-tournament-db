@@ -6,10 +6,10 @@ A smarter tournament system in which players are paired with those of similar sk
 
 A PostgreSQL database stores match results, and a Python module queries the database to rank and pair players. When two players have the same win record, ties are broken by summing the win record of each player's previous opponents.
 
-The main parts of the app are:
-  * **tournament_text.py** - containing our test cases
-  * **tournament.py** - is our python-db api for initiating db queries
-  * **tournament.sql** - contains our sql queries
+## Documentation
+
+To read more about the concept and details of the implementation visit
+  [Concept.md](CONCEPT.md "Documentation").
 
 ## Requirements
 

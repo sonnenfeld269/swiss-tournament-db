@@ -11,7 +11,7 @@
 ## Project structure
 
 - tournament/
-    - tournament_text.py - containing our test cases
+    - tournament_test.py - containing our test cases
     - tournament.py - is our python-db api for initiating db queries
     - tournament.sql - contains our sql queries
 
