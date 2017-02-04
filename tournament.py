@@ -20,6 +20,7 @@ def deleteMatches():
     connection.commit()
     connection.close()
 
+
 def deletePlayers():
     """Remove all the player records from the database."""
     connection = connect()
@@ -28,6 +29,7 @@ def deletePlayers():
     db_cursor.execute(query)
     connection.commit()
     connection.close()
+
 
 def countPlayers():
     """Returns the number of players currently registered."""
@@ -39,6 +41,7 @@ def countPlayers():
     connection.commit()
     connection.close()
     return num_players
+
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
@@ -55,6 +58,7 @@ def registerPlayer(name):
     db_cursor.execute(query)
     connection.commit()
     connection.close()
+
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
@@ -78,6 +82,7 @@ def playerStandings():
     connection.close()
     return standings
 
+
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
 
@@ -87,10 +92,12 @@ def reportMatch(winner, loser):
     """
     connection = connect()
     db_cursor = connection.cursor()
-    query = "INSERT INTO matches (winner, loser) VALUES (%s,%s);" % (winner, loser)
+    query = "INSERT INTO matches (winner, loser) VALUES (%s,%s);" % (
+        winner, loser)
     db_cursor.execute(query)
     connection.commit()
     connection.close()
+
 
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -112,8 +119,9 @@ def swissPairings():
     all_standings = playerStandings()
     if countPlayers() % 2 == 0:
         # this for loop is equivalent to for(i=0,i<all_standings.length,i=i+2)
-        for i in range(0, len(all_standings)-1, 2):
-            pairing_tuple=(all_standings[i][0],all_standings[i][1],all_standings[i+1][0],all_standings[i+1][1])
+        for i in range(0, len(all_standings) - 1, 2):
+            pairing_tuple = (all_standings[i][0], all_standings[i][
+                             1], all_standings[i + 1][0], all_standings[i + 1][1])
             pairings.append(pairing_tuple)
 
     return pairings
