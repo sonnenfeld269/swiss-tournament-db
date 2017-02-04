@@ -54,6 +54,7 @@ def registerPlayer(name):
     """
     connection = connect()
     db_cursor = connection.cursor()
+    name = name.replace("'", "''")  # to insert names like "Boots O'Neal"
     query = "INSERT INTO players (name) VALUES ('%s');" % name
     db_cursor.execute(query)
     connection.commit()
