@@ -1,6 +1,7 @@
-DROP TABLE players CASCADE;
-DROP TABLE matches CASCADE;
+TRUNCATE TABLE players CASCADE;
+TRUNCATE TABLE matches CASCADE;
 
+\c template1
 DROP DATABASE IF EXISTS tournament;
 CREATE DATABASE tournament;
 \c tournament
