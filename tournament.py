@@ -6,15 +6,28 @@
 import psycopg2
 
 
-def connect():
-    """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+def connect(database_name="tournament"):
+    """Connect to the PostgreSQL database.  Returns a database connection
+
+    Args:
+        database_name: name of the database
+
+    Returns:
+        db: connection object
+        cursor: a cursor for executing psql queries
+    """
+    try:
+        connection = psycopg2.connect("dbname=%s" % database_name)
+        cursor = connection.cursor()
+        return connection, cursor
+    except:
+        print "conn to " + database_name
+        print("Could not connect to database.")
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    connection = connect()
-    db_cursor = connection.cursor()
+    connection, db_cursor = connect()
     query = "DELETE FROM matches;"
     db_cursor.execute(query)
     connection.commit()
@@ -22,9 +35,8 @@ def deleteMatches():
 
 
 def deletePlayers():
-    """Remove all the player records from the database."""
-    connection = connect()
-    db_cursor = connection.cursor()
+    """Remove all player records from the database."""
+    connection, db_cursor = connect()
     query = "DELETE FROM players;"
     db_cursor.execute(query)
     connection.commit()
@@ -33,8 +45,7 @@ def deletePlayers():
 
 def countPlayers():
     """Returns the number of players currently registered."""
-    connection = connect()
-    db_cursor = connection.cursor()
+    connection, db_cursor = connect()
     query = "SELECT count(*) FROM players;"
     db_cursor.execute(query)
     num_players = db_cursor.fetchall()[0][0]
@@ -50,10 +61,9 @@ def registerPlayer(name):
     should be handled by your SQL database schema, not in your Python code.)
 
     Args:
-      name: the player's full name (need not be unique).
+      name: the player's full name(need not be unique).
     """
-    connection = connect()
-    db_cursor = connection.cursor()
+    connection, db_cursor = connect()
     name = name.replace("'", "''")  # to insert names like "Boots O'Neal"
     query = "INSERT INTO players (name) VALUES ('%s');" % name
     db_cursor.execute(query)
@@ -68,14 +78,13 @@ def playerStandings():
     tied for first place if there is currently a tie.
 
     Returns:
-      A list of tuples, each of which contains (id, name, wins, matches):
-        id: the player's unique id (assigned by the database)
-        name: the player's full name (as registered)
+      A list of tuples, each of which contains(id, name, wins, matches):
+        id: the player's unique id(assigned by the database)
+        name: the player's full name(as registered)
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    connection = connect()
-    db_cursor = connection.cursor()
+    connection, db_cursor = connect()
     query = "SELECT * FROM v_playerstandings;"
     db_cursor.execute(query)
     standings = db_cursor.fetchall()
@@ -91,8 +100,7 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
-    connection = connect()
-    db_cursor = connection.cursor()
+    connection, db_cursor = connect()
     query = "INSERT INTO matches (winner, loser) VALUES (%s,%s);" % (
         winner, loser)
     db_cursor.execute(query)
@@ -105,11 +113,11 @@ def swissPairings():
 
     Assuming that there are an even number of players registered, each player
     appears exactly once in the pairings.  Each player is paired with another
-    player with an equal or nearly-equal win record, that is, a player adjacent
+    player with an equal or nearly - equal win record, that is, a player adjacent
     to him or her in the standings.
 
     Returns:
-      A list of tuples, each of which contains (id1, name1, id2, name2)
+      A list of tuples, each of which contains(id1, name1, id2, name2)
         id1: the first player's unique id
         name1: the first player's name
         id2: the second player's unique id
