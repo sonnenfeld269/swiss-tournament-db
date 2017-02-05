@@ -21,14 +21,13 @@ def connect(database_name="tournament"):
         cursor = connection.cursor()
         return connection, cursor
     except:
-        print "conn to " + database_name
         print("Could not connect to database.")
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
     connection, db_cursor = connect()
-    query = "DELETE FROM matches;"
+    query = "TRUNCATE TABLE matches CASCADE;"
     db_cursor.execute(query)
     connection.commit()
     connection.close()
@@ -37,7 +36,7 @@ def deleteMatches():
 def deletePlayers():
     """Remove all player records from the database."""
     connection, db_cursor = connect()
-    query = "DELETE FROM players;"
+    query = "TRUNCATE TABLE players CASCADE;"
     db_cursor.execute(query)
     connection.commit()
     connection.close()
