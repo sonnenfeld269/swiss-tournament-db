@@ -1,6 +1,10 @@
 DROP TABLE players CASCADE;
 DROP TABLE matches CASCADE;
 
+DROP DATABASE IF EXISTS tournament;
+CREATE DATABASE tournament;
+\c tournament
+
 CREATE TABLE players (id SERIAL primary key, name TEXT);
 CREATE TABLE matches (id SERIAL primary key,
                       winner INTEGER REFERENCES players (id),
