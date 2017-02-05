@@ -24,7 +24,7 @@ def testCount():
     if c != 0:
         raise ValueError("After deletion, countPlayers should return zero.")
     print "1. countPlayers() returns 0 after initial deletePlayers() execution."
-    registerPlayer("Chandra Nalaar")
+    registerPlayer("Chandra Na''la'ar")
     c = countPlayers()
     if c != 1:
         raise ValueError(

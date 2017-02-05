@@ -57,16 +57,16 @@ def countPlayers():
 def registerPlayer(name):
     """Adds a player to the tournament database.
 
-    The database assigns a unique serial id number for the player.  (This
-    should be handled by your SQL database schema, not in your Python code.)
+    The database assigns a unique serial id number for the player.
+    For details check the SQL database schema @tournament.sql
 
     Args:
       name: the player's full name(need not be unique).
     """
     connection, db_cursor = connect()
-    name = name.replace("'", "''")  # to insert names like "Boots O'Neal"
-    query = "INSERT INTO players (name) VALUES ('%s');" % name
-    db_cursor.execute(query)
+    query = "INSERT INTO players (name) VALUES (%s);"
+    params = (name,)  # use parameters to prevent sql injection
+    db_cursor.execute(query, params)
     connection.commit()
     connection.close()
 
@@ -101,9 +101,9 @@ def reportMatch(winner, loser):
       loser:  the id number of the player who lost
     """
     connection, db_cursor = connect()
-    query = "INSERT INTO matches (winner, loser) VALUES (%s,%s);" % (
-        winner, loser)
-    db_cursor.execute(query)
+    query = "INSERT INTO matches (winner, loser) VALUES (%s,%s);"
+    params = (winner, loser)  # use parameters to prevent sql injection
+    db_cursor.execute(query, params)
     connection.commit()
     connection.close()
 
